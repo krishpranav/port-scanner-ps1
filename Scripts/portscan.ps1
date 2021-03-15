@@ -44,3 +44,28 @@ Begin{
 
     $PortList_Path = "$PSScriptRoot\Resources\ports.txt"
 }
+
+Process{
+    if(Test-Path -Path $PortList_Path -PathType Leaf)
+    {
+        $PortsHashTable = @{ }
+
+        Write-Verbose -Message "Read ports.txt and file has table..."
+
+        foreach($Line in Get-Content -Path $PortList_Path)
+        {
+            if (-not([String]::IsNullOrEmpty($Line)))
+            {
+                try{
+                    $HashTableData = $Line.Split('|')
+
+                    if($HashTableDate[1] -eq "tcp")
+                    {
+                        $PortsHashTable.Add([int]$HashTableData[0], [String]::Format("{0}|{1}", $HashTableData[3]))
+                    }
+                }
+                catch [System.ArgumentException] { } #Catch if port is already
+            }
+        }
+    }
+}
